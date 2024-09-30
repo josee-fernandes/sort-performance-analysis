@@ -5,10 +5,16 @@ import { ArrowDown01 } from 'lucide-react'
 interface SortCardProps {
   name: string
   time: number
+  count: number
   icon?: React.ReactNode
 }
 
-export const SortCard: React.FC<SortCardProps> = ({ name, time, icon }) => {
+export const SortCard: React.FC<SortCardProps> = ({
+  name,
+  time,
+  count,
+  icon,
+}) => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -20,7 +26,8 @@ export const SortCard: React.FC<SortCardProps> = ({ name, time, icon }) => {
         )}
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{time}ms</div>
+        <p className="text-2xl font-bold">{time}ms</p>
+        <p className="text-xs text-muted-foreground">{count} items sorted</p>
       </CardContent>
     </Card>
   )

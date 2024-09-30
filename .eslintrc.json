@@ -1,6 +1,7 @@
 {
   "extends": ["next/core-web-vitals", "@rocketseat/eslint-config/next"],
   "rules": {
-    "import/no-absolute-path": "off"
+    "import/no-absolute-path": "off",
+    "@typescript-eslint/no-unused-vars": "warn"
   }
 }
