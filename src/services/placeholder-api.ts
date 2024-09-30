@@ -1,4 +1,5 @@
 import { placeholderApi } from '@/lib/axios'
+import { shuffle } from '@/utils/placeholder-data'
 
 type GetPhotosFnParams = void
 
@@ -7,7 +8,12 @@ type GetPhotosFnResponse = Photo[]
 type GetPhotosFn = (params: GetPhotosFnParams) => Promise<GetPhotosFnResponse>
 
 export const getPhotos: GetPhotosFn = async () => {
-  const response = await placeholderApi.get<GetPhotosFnResponse>('/photos')
+  try {
+    const response = await placeholderApi.get<GetPhotosFnResponse>('/photos')
 
-  return response.data
+    return shuffle(response?.data ?? [])
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
 }

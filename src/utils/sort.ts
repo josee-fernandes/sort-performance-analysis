@@ -1,34 +1,35 @@
 const partition = (arr: Array<object>, low: number, high: number) => {
-  const pivot = arr[high]
+  // @ts-expect-error array could have id and be objects instead of numbers
+  const pivot = arr[high]?.id ?? arr[high]
   let i = low - 1
 
   for (let j = low; j <= high - 1; j++) {
-    // If current element is smaller than the pivot
-    if (arr[j] < pivot) {
-      // Increment index of smaller element
+    // @ts-expect-error array could have id and be objects instead of numbers
+    if (arr[j].id < pivot) {
       i++
-      // Swap elements
       ;[arr[i], arr[j]] = [arr[j], arr[i]]
     }
   }
-  // Swap pivot to its correct position
   ;[arr[i + 1], arr[high]] = [arr[high], arr[i + 1]]
-  return i + 1 // Return the partition index
+  return i + 1
 }
 
 export const quickSort = (arr: Array<object>, low: number, high: number) => {
-  if (low >= high) return
+  if (low >= high) return arr
   const pi = partition(arr, low, high)
 
   quickSort(arr, low, pi - 1)
   quickSort(arr, pi + 1, high)
+
+  return arr
 }
 
 export const bubbleSort = (array: Array<object>) => {
   const arr = Array.from(array) // avoid side effects
   for (let i = 1; i < arr.length; i++) {
     for (let j = 0; j < arr.length - i; j++) {
-      if (arr[j] > arr[j + 1]) {
+      // @ts-expect-error array could have id and be objects instead of numbers
+      if (arr[j].id > arr[j + 1].id) {
         ;[arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
       }
     }
