@@ -1,19 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
-import { CircleDashed } from 'lucide-react'
+import { BetweenVerticalStart, Zap } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { bubbleSort } from '@/utils/sort'
+import { insertionSort } from '@/utils/sort'
 
-interface BubbleSortCardProps {
+interface InsertionSortCardProps {
   data: any[]
   sortBy: 'number' | 'name' | 'id'
 }
 
-export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
+export const InsertionSortCard: React.FC<InsertionSortCardProps> = ({
   data,
   sortBy,
 }) => {
+  console.log('Renderizado', sortBy)
+
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -25,14 +27,14 @@ export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
       try {
         setIsSorting(true)
 
-        const startBubbleSort = performance.now()
-        await new Promise((resolve) => resolve(bubbleSort(arr, sortBy)))
-        const endBubbleSort = performance.now()
-        const bubbleSortTimeSpend = endBubbleSort - startBubbleSort
+        const startInsertionSort = performance.now()
+        await new Promise((resolve) => resolve(insertionSort(arr, sortBy)))
+        const endInsertionSort = performance.now()
+        const insertionSortTimeSpend = endInsertionSort - startInsertionSort
 
-        setTime(bubbleSortTimeSpend)
+        setTime(insertionSortTimeSpend)
       } catch (error: any) {
-        setError(error?.message ?? 'Bubble sort error')
+        setError(error?.message ?? 'Insertion sort error')
 
         return 0
       } finally {
@@ -50,13 +52,13 @@ export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
 
   return (
     <SortCard
-      name="Bubble Sort"
+      name="Insertion Sort"
       time={time}
       count={data?.length}
       isSorting={isSorting}
       error={error}
       icon={
-        <CircleDashed
+        <BetweenVerticalStart
           className={cn(
             'h-4 w-4 text-muted-foreground',
             isSorting && 'animate-spin',
@@ -67,4 +69,4 @@ export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
   )
 }
 
-BubbleSortCard.displayName = 'BubbleSortCard'
+InsertionSortCard.displayName = 'InsertionSortCard'

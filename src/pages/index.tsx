@@ -8,6 +8,7 @@ import { NextPage } from 'next'
 
 import sample from '@/services/sample.json'
 import { shuffle } from '@/utils/array'
+import { InsertionSortCard } from '@/components/insertion-sort'
 
 const numbers = shuffle(Array.from({ length: 20000 }, (_, i) => i))
 const shuffledSample = shuffle(sample as Sample)
@@ -47,6 +48,7 @@ const HomePage: NextPage = () => {
             <QuickSortCard data={photos ?? []} sortBy="id" />
             <BubbleSortCard data={photos ?? []} sortBy="id" />
             <CocktailSortCard data={photos ?? []} sortBy="id" />
+            <InsertionSortCard data={photos ?? []} sortBy="id" />
           </div>
         </div>
         <div className="flex flex-col gap-4 mt-10">
@@ -59,6 +61,7 @@ const HomePage: NextPage = () => {
             <QuickSortCard data={shuffledSample} sortBy="name" />
             <BubbleSortCard data={shuffledSample} sortBy="name" />
             <CocktailSortCard data={shuffledSample} sortBy="name" />
+            <InsertionSortCard data={shuffledSample} sortBy="name" />
           </div>
         </div>
         <div className="flex flex-col gap-4 mt-10">
@@ -69,6 +72,7 @@ const HomePage: NextPage = () => {
             <QuickSortCard data={numbers} sortBy="number" />
             <BubbleSortCard data={numbers} sortBy="number" />
             <CocktailSortCard data={numbers} sortBy="number" />
+            <InsertionSortCard data={numbers} sortBy="number" />
           </div>
         </div>
       </div>

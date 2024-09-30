@@ -47,10 +47,6 @@ export const QuickSortCard: React.FC<QuickSortCardProps> = ({
   )
 
   useEffect(() => {
-    console.log(isSorting)
-  }, [isSorting])
-
-  useEffect(() => {
     if (data?.length) {
       sortAndMeasureTime(data)
     }
