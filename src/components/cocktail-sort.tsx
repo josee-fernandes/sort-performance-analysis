@@ -7,38 +7,44 @@ import { cocktailSort } from '@/utils/sort'
 
 interface CocktailSortCardProps {
   data: any[]
-  sortBy: 'numeric' | 'alphabetical' | 'id'
+  sortBy: 'number' | 'name' | 'id'
 }
 
 export const CocktailSortCard: React.FC<CocktailSortCardProps> = ({
   data,
   sortBy,
 }) => {
-  const [isSorting, setIsSorting] = useState(false)
-
+  const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
+  const [error, setError] = useState('')
 
   const sortAndMeasureTime = useCallback(
-    (arr: any[]) => {
+    async (arr: any[]) => {
       console.log('by', sortBy)
 
-      setIsSorting(true)
+      try {
+        setIsSorting(true)
 
-      const startCocktailSort = performance.now()
-      cocktailSort(arr)
-      const endCocktailSort = performance.now()
-      const cocktailSortTimeSpend = endCocktailSort - startCocktailSort
+        const startCocktailSort = performance.now()
+        await new Promise((resolve) => resolve(cocktailSort(arr)))
+        const endCocktailSort = performance.now()
+        const cocktailSortTimeSpend = endCocktailSort - startCocktailSort
 
-      setIsSorting(false)
+        setTime(cocktailSortTimeSpend)
+      } catch (error: any) {
+        setError(error?.message ?? 'Cocktail sort error')
 
-      return cocktailSortTimeSpend
+        return 0
+      } finally {
+        setIsSorting(false)
+      }
     },
     [sortBy],
   )
 
   useEffect(() => {
     if (data?.length) {
-      setTime(sortAndMeasureTime(data))
+      sortAndMeasureTime(data)
     }
   }, [data, sortAndMeasureTime])
 
@@ -47,6 +53,8 @@ export const CocktailSortCard: React.FC<CocktailSortCardProps> = ({
       name="Cocktail Sort"
       time={time}
       count={data?.length}
+      isSorting={isSorting}
+      error={error}
       icon={
         <Martini
           className={cn(

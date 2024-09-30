@@ -1,4 +1,5 @@
-export const shuffle = (array: Photo[]) => {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export const shuffle = (array: any[]) => {
   const copy = array.slice()
 
   for (let i = copy.length - 1; i >= 0; i--) {

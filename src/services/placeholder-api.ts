@@ -1,5 +1,5 @@
 import { placeholderApi } from '@/lib/axios'
-import { shuffle } from '@/utils/placeholder-data'
+import { shuffle } from '@/utils/array'
 
 type GetPhotosFnParams = void
 

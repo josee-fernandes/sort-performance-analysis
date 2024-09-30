@@ -1,11 +1,14 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { ArrowDown01 } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface SortCardProps {
   name: string
   time: number
   count: number
+  isSorting: boolean
+  error?: string
   icon?: React.ReactNode
 }
 
@@ -13,6 +16,8 @@ export const SortCard: React.FC<SortCardProps> = ({
   name,
   time,
   count,
+  isSorting,
+  error,
   icon,
 }) => {
   return (
@@ -26,8 +31,20 @@ export const SortCard: React.FC<SortCardProps> = ({
         )}
       </CardHeader>
       <CardContent>
-        <p className="text-2xl font-bold">{time}ms</p>
-        <p className="text-xs text-muted-foreground">{count} items sorted</p>
+        <p
+          className={cn(
+            'text-2xl font-bold transition-colors',
+            error && !isSorting ? 'text-rose-500' : 'text-emerald-500',
+            isSorting && 'text-amber-500',
+          )}
+        >
+          {time}ms
+        </p>
+        <p className="text-xs text-muted-foreground">
+          {isSorting && `Sorting ${count} items`}
+          {error && `Could not sort ${count} items`}
+          {!isSorting && !error && `${count} items sorted`}
+        </p>
       </CardContent>
     </Card>
   )

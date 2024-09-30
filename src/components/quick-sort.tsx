@@ -7,38 +7,52 @@ import { quickSort } from '@/utils/sort'
 
 interface QuickSortCardProps {
   data: any[]
-  sortBy: 'numeric' | 'alphabetical' | 'id'
+  sortBy: 'number' | 'name' | 'id'
 }
 
 export const QuickSortCard: React.FC<QuickSortCardProps> = ({
   data,
   sortBy,
 }) => {
-  const [isSorting, setIsSorting] = useState(false)
+  console.log('Renderizado', sortBy)
 
+  const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
+  const [error, setError] = useState('')
 
   const sortAndMeasureTime = useCallback(
-    (arr: any[]) => {
+    async (arr: any[]) => {
       console.log('by', sortBy)
 
-      setIsSorting(true)
+      try {
+        setIsSorting(true)
 
-      const startQuickSort = performance.now()
-      quickSort(arr, 0, arr.length - 1)
-      const endQuickSort = performance.now()
-      const quickSortTimeSpend = endQuickSort - startQuickSort
+        const startQuickSort = performance.now()
+        await new Promise((resolve) =>
+          resolve(quickSort(arr, 0, arr.length - 1, sortBy)),
+        )
+        const endQuickSort = performance.now()
+        const quickSortTimeSpend = endQuickSort - startQuickSort
 
-      setIsSorting(false)
+        setTime(quickSortTimeSpend)
+      } catch (error: any) {
+        setError(error?.message ?? 'Quick sort error')
 
-      return quickSortTimeSpend
+        return 0
+      } finally {
+        setIsSorting(false)
+      }
     },
     [sortBy],
   )
 
   useEffect(() => {
+    console.log(isSorting)
+  }, [isSorting])
+
+  useEffect(() => {
     if (data?.length) {
-      setTime(sortAndMeasureTime(data))
+      sortAndMeasureTime(data)
     }
   }, [data, sortAndMeasureTime])
 
@@ -47,6 +61,8 @@ export const QuickSortCard: React.FC<QuickSortCardProps> = ({
       name="Quick Sort"
       time={time}
       count={data?.length}
+      isSorting={isSorting}
+      error={error}
       icon={
         <Zap
           className={cn(

@@ -7,38 +7,44 @@ import { bubbleSort } from '@/utils/sort'
 
 interface BubbleSortCardProps {
   data: any[]
-  sortBy: 'numeric' | 'alphabetical' | 'id'
+  sortBy: 'number' | 'name' | 'id'
 }
 
 export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
   data,
   sortBy,
 }) => {
-  const [isSorting, setIsSorting] = useState(false)
-
+  const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
+  const [error, setError] = useState('')
 
   const sortAndMeasureTime = useCallback(
-    (arr: any[]) => {
+    async (arr: any[]) => {
       console.log('by', sortBy)
 
-      setIsSorting(true)
+      try {
+        setIsSorting(true)
 
-      const startBubbleSort = performance.now()
-      bubbleSort(arr)
-      const endBubbleSort = performance.now()
-      const bubbleSortTimeSpend = endBubbleSort - startBubbleSort
+        const startBubbleSort = performance.now()
+        await new Promise((resolve) => resolve(bubbleSort(arr, sortBy)))
+        const endBubbleSort = performance.now()
+        const bubbleSortTimeSpend = endBubbleSort - startBubbleSort
 
-      setIsSorting(false)
+        setTime(bubbleSortTimeSpend)
+      } catch (error: any) {
+        setError(error?.message ?? 'Bubble sort error')
 
-      return bubbleSortTimeSpend
+        return 0
+      } finally {
+        setIsSorting(false)
+      }
     },
     [sortBy],
   )
 
   useEffect(() => {
     if (data?.length) {
-      setTime(sortAndMeasureTime(data))
+      sortAndMeasureTime(data)
     }
   }, [data, sortAndMeasureTime])
 
@@ -47,6 +53,8 @@ export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
       name="Bubble Sort"
       time={time}
       count={data?.length}
+      isSorting={isSorting}
+      error={error}
       icon={
         <Circle
           className={cn(

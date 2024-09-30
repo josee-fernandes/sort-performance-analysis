@@ -5,3 +5,5 @@ interface Photo {
   url: string
   thumbnailUrl: string
 }
+
+type SortBy = 'id' | 'name' | 'number'

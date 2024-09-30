@@ -1,11 +1,18 @@
-const partition = (arr: Array<object>, low: number, high: number) => {
-  // @ts-expect-error array could have id and be objects instead of numbers
-  const pivot = arr[high]?.id ?? arr[high]
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const partition = (arr: any[], low: number, high: number, sortBy: SortBy) => {
+  const pivot =
+    sortBy === 'id'
+      ? arr[high]?.id
+      : sortBy === 'name'
+        ? arr[high]?.name
+        : arr[high]
   let i = low - 1
 
   for (let j = low; j <= high - 1; j++) {
-    // @ts-expect-error array could have id and be objects instead of numbers
-    if (arr[j].id < pivot) {
+    const current =
+      sortBy === 'id' ? arr[j]?.id : sortBy === 'name' ? arr[j]?.name : arr[j]
+
+    if (current < pivot) {
       i++
       ;[arr[i], arr[j]] = [arr[j], arr[i]]
     }
@@ -14,22 +21,35 @@ const partition = (arr: Array<object>, low: number, high: number) => {
   return i + 1
 }
 
-export const quickSort = (arr: Array<object>, low: number, high: number) => {
+export const quickSort = (
+  arr: any[],
+  low: number,
+  high: number,
+  sortBy: SortBy,
+) => {
   if (low >= high) return arr
-  const pi = partition(arr, low, high)
+  const pi = partition(arr, low, high, sortBy)
 
-  quickSort(arr, low, pi - 1)
-  quickSort(arr, pi + 1, high)
+  quickSort(arr, low, pi - 1, sortBy)
+  quickSort(arr, pi + 1, high, sortBy)
 
   return arr
 }
 
-export const bubbleSort = (array: Array<object>) => {
+export const bubbleSort = (array: any[], sortBy: SortBy) => {
   const arr = Array.from(array) // avoid side effects
   for (let i = 1; i < arr.length; i++) {
     for (let j = 0; j < arr.length - i; j++) {
-      // @ts-expect-error array could have id and be objects instead of numbers
-      if (arr[j].id > arr[j + 1].id) {
+      const current =
+        sortBy === 'id' ? arr[j]?.id : sortBy === 'name' ? arr[j]?.name : arr[j]
+      const next =
+        sortBy === 'id'
+          ? arr[j + 1]?.id
+          : sortBy === 'name'
+            ? arr[j + 1]?.name
+            : arr[j + 1]
+
+      if (current > next) {
         ;[arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
       }
     }
@@ -37,7 +57,7 @@ export const bubbleSort = (array: Array<object>) => {
   return arr
 }
 
-export const cocktailSort = (array: Array<object>) => {
+export const cocktailSort = (array: any[]) => {
   const a = array.slice()
 
   let swapped = true
