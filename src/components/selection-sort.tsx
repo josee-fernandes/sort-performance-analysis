@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
-import { Merge } from 'lucide-react'
+import { Wand } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { mergeSort } from '@/utils/sort'
+import { selectionSort } from '@/utils/sort'
 import { useSortingState } from '@/contexts/sorting-state'
 
-interface MergeSortCardProps {
+interface SelectionSortCardProps {
   data: any[]
   sortBy: 'number' | 'name' | 'id'
 }
 
-export const MergeSortCard: React.FC<MergeSortCardProps> = ({
+export const SelectionSortCard: React.FC<SelectionSortCardProps> = ({
   data,
   sortBy,
 }) => {
@@ -23,19 +23,19 @@ export const MergeSortCard: React.FC<MergeSortCardProps> = ({
 
   const sortAndMeasureTime = useCallback(
     async (arr: any[]) => {
-      console.log('➕ Merge by', sortBy)
+      console.log('🔎 Selection by', sortBy)
 
       try {
         setIsSorting(true)
 
-        const startMergeSort = performance.now()
-        await new Promise((resolve) => resolve(mergeSort(arr, sortBy)))
-        const endMergeSort = performance.now()
-        const mergeSortTimeSpend = endMergeSort - startMergeSort
+        const startSelectionSort = performance.now()
+        await new Promise((resolve) => resolve(selectionSort(arr, sortBy)))
+        const endSelectionSort = performance.now()
+        const selectionSortTimeSpend = endSelectionSort - startSelectionSort
 
-        setTime(mergeSortTimeSpend)
+        setTime(selectionSortTimeSpend)
       } catch (error: any) {
-        setError(error?.message ?? 'Merge sort error')
+        setError(error?.message ?? 'Selection sort error')
 
         return 0
       } finally {
@@ -46,21 +46,21 @@ export const MergeSortCard: React.FC<MergeSortCardProps> = ({
   )
 
   useEffect(() => {
-    if (data?.length && nowSorting === 'merge') {
-      sortAndMeasureTime(data).then(() => updateNowSorting('selection'))
+    if (data?.length && nowSorting === 'selection') {
+      sortAndMeasureTime(data).then(() => updateNowSorting('none'))
     }
   }, [data, sortAndMeasureTime, nowSorting, updateNowSorting])
 
   return (
     <SortCard
-      name="Merge Sort"
+      name="Selection Sort"
       time={time}
       count={data?.length}
       isSorting={isSorting}
-      isActive={nowSorting === 'merge'}
+      isActive={nowSorting === 'selection'}
       error={error}
       icon={
-        <Merge
+        <Wand
           className={cn(
             'h-4 w-4 text-muted-foreground',
             isSorting && 'animate-spin',
@@ -71,4 +71,4 @@ export const MergeSortCard: React.FC<MergeSortCardProps> = ({
   )
 }
 
-MergeSortCard.displayName = 'MergeSortCard'
+SelectionSortCard.displayName = 'SelectionSortCard'

@@ -11,6 +11,7 @@ import { shuffle } from '@/utils/array'
 import { InsertionSortCard } from '@/components/insertion-sort'
 import { SortingStateContextProvider } from '@/contexts/sorting-state'
 import { MergeSortCard } from '@/components/merge-sort'
+import { SelectionSortCard } from '@/components/selection-sort'
 
 const numbers = shuffle(Array.from({ length: 20000 }, (_, i) => i))
 const shuffledSample = shuffle(sample as Sample)
@@ -53,6 +54,7 @@ const HomePage: NextPage = () => {
               <CocktailSortCard data={photos ?? []} sortBy="id" />
               <InsertionSortCard data={photos ?? []} sortBy="id" />
               <MergeSortCard data={photos ?? []} sortBy="id" />
+              <SelectionSortCard data={photos ?? []} sortBy="id" />
             </div>
           </div>
           <div className="flex flex-col gap-4 mt-10">
@@ -67,6 +69,7 @@ const HomePage: NextPage = () => {
               <CocktailSortCard data={shuffledSample} sortBy="name" />
               <InsertionSortCard data={shuffledSample} sortBy="name" />
               <MergeSortCard data={shuffledSample} sortBy="name" />
+              <SelectionSortCard data={shuffledSample} sortBy="name" />
             </div>
           </div>
           <div className="flex flex-col gap-4 mt-10">
@@ -81,6 +84,7 @@ const HomePage: NextPage = () => {
               <CocktailSortCard data={numbers} sortBy="number" />
               <InsertionSortCard data={numbers} sortBy="number" />
               <MergeSortCard data={numbers} sortBy="number" />
+              <SelectionSortCard data={numbers} sortBy="number" />
             </div>
           </div>
         </div>

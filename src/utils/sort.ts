@@ -114,19 +114,6 @@ export const cocktailSort = async (array: any[], sortBy: SortBy) => {
   return a
 }
 
-// function swap(ary, a, b) {
-//   const t = ary[a]
-//   ary[a] = ary[b]
-//   ary[b] = t
-// }
-
-// // Built-in with comparison function (default sorting is "dictionary-style")
-// function builtin_sort(ary) {
-//   return ary.sort(function (a, b) {
-//     return a - b
-//   })
-// }
-
 export const insertionSort = (arr: any[], sortBy: SortBy) => {
   for (let i = 1, l = arr.length; i < l; i++) {
     const pointer =
@@ -148,6 +135,99 @@ export const insertionSort = (arr: any[], sortBy: SortBy) => {
 
   return arr
 }
+
+const merge = (left: any[], right: any[], sortBy: SortBy) => {
+  const result = []
+  let li = 0
+  let ri = 0
+
+  while (li < left.length || ri < right.length) {
+    if (li < left.length && ri < right.length) {
+      const currentLeft =
+        sortBy === 'id'
+          ? left[li]?.id
+          : sortBy === 'name'
+            ? left[li]?.name
+            : left[li]
+      const currentRight =
+        sortBy === 'id'
+          ? right[ri]?.id
+          : sortBy === 'name'
+            ? right[ri]?.name
+            : right[ri]
+
+      if (currentLeft <= currentRight) {
+        result.push(left[li])
+        li++
+      } else {
+        result.push(right[ri])
+        ri++
+      }
+    } else if (li < left.length) {
+      result.push(left[li])
+      li++
+    } else if (ri < right.length) {
+      result.push(right[ri])
+      ri++
+    }
+  }
+
+  return result
+}
+
+export const mergeSort = (arr: any[], sortBy: SortBy): any[] => {
+  if (arr.length <= 1) {
+    return arr
+  }
+
+  const m = arr.length >> 1
+
+  const left = arr.slice(0, m)
+  const right = arr.slice(m)
+
+  return merge(mergeSort(left, sortBy), mergeSort(right, sortBy), sortBy)
+}
+
+export const selectionSort = (arr: any[], sortBy: SortBy) => {
+  const n = arr.length
+  for (let i = 0; i < n - 1; i++) {
+    let minimumIndex = i
+
+    const pointer =
+      sortBy === 'id'
+        ? arr[minimumIndex]?.id
+        : sortBy === 'name'
+          ? arr[minimumIndex]?.name
+          : arr[minimumIndex]
+
+    for (let j = i + 1; j < n; j++) {
+      const current =
+        sortBy === 'id' ? arr[j]?.id : sortBy === 'name' ? arr[j]?.name : arr[j]
+      if (current < pointer) {
+        minimumIndex = j
+      }
+    }
+
+    if (minimumIndex !== i) {
+      const temp = arr[i]
+      arr[i] = arr[minimumIndex]
+      arr[minimumIndex] = temp
+    }
+  }
+}
+
+// function swap(ary, a, b) {
+//   const t = ary[a]
+//   ary[a] = ary[b]
+//   ary[b] = t
+// }
+
+// // Built-in with comparison function (default sorting is "dictionary-style")
+// function builtin_sort(ary) {
+//   return ary.sort(function (a, b) {
+//     return a - b
+//   })
+// }
 
 // // Naive (but understandable) quicksort (memory hog)
 // function naive_quicksort(ary) {
@@ -253,59 +333,6 @@ export const insertionSort = (arr: any[], sortBy: SortBy) => {
 //     }
 //   }
 // }
-
-// // Merge sort
-const merge = (left: any[], right: any[], sortBy: SortBy) => {
-  const result = []
-  let li = 0
-  let ri = 0
-
-  while (li < left.length || ri < right.length) {
-    if (li < left.length && ri < right.length) {
-      const currentLeft =
-        sortBy === 'id'
-          ? left[li]?.id
-          : sortBy === 'name'
-            ? left[li]?.name
-            : left[li]
-      const currentRight =
-        sortBy === 'id'
-          ? right[ri]?.id
-          : sortBy === 'name'
-            ? right[ri]?.name
-            : right[ri]
-
-      if (currentLeft <= currentRight) {
-        result.push(left[li])
-        li++
-      } else {
-        result.push(right[ri])
-        ri++
-      }
-    } else if (li < left.length) {
-      result.push(left[li])
-      li++
-    } else if (ri < right.length) {
-      result.push(right[ri])
-      ri++
-    }
-  }
-
-  return result
-}
-
-export const mergeSort = (arr: any[], sortBy: SortBy): any[] => {
-  if (arr.length <= 1) {
-    return arr
-  }
-
-  const m = arr.length >> 1
-
-  const left = arr.slice(0, m)
-  const right = arr.slice(m)
-
-  return merge(mergeSort(left, sortBy), mergeSort(right, sortBy), sortBy)
-}
 
 // // Shell sort
 // function shell_sort(ary) {

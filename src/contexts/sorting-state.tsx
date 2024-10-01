@@ -14,6 +14,7 @@ type SortingType =
   | 'cocktail'
   | 'insertion'
   | 'merge'
+  | 'selection'
 
 interface SortingStateContext {
   nowSorting: SortingType
