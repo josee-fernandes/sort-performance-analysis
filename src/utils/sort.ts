@@ -216,11 +216,69 @@ export const selectionSort = (arr: any[], sortBy: SortBy) => {
   }
 }
 
-// function swap(ary, a, b) {
-//   const t = ary[a]
-//   ary[a] = ary[b]
-//   ary[b] = t
-// }
+const swap = (arr: any[], a: number, b: number) => {
+  const t = arr[a]
+  arr[a] = arr[b]
+  arr[b] = t
+}
+
+const shiftDown = (arr: any[], start: number, end: number, sortBy: SortBy) => {
+  let root = start
+  let child
+  let s
+
+  while (root * 2 + 1 <= end) {
+    child = root * 2 + 1
+    s = root
+
+    const current =
+      sortBy === 'id' ? arr[s]?.id : sortBy === 'name' ? arr[s]?.name : arr[s]
+    const currentChild =
+      sortBy === 'id'
+        ? arr[child]?.id
+        : sortBy === 'name'
+          ? arr[child]?.name
+          : arr[child]
+    const next =
+      sortBy === 'id'
+        ? arr[child + 1]?.id
+        : sortBy === 'name'
+          ? arr[child + 1]?.name
+          : arr[child + 1]
+
+    if (current < currentChild) {
+      s = child
+    }
+
+    if (child + 1 <= end && current < next) {
+      s = child + 1
+    }
+
+    if (s !== root) {
+      swap(arr, root, s)
+      root = s
+    } else {
+      return
+    }
+  }
+}
+
+const heapify = (arr: any[], sortBy: SortBy) => {
+  for (let start = (arr.length >> 1) - 1; start >= 0; start--) {
+    shiftDown(arr, start, arr.length - 1, sortBy)
+  }
+}
+
+export const heapSort = (arr: any[], sortBy: SortBy) => {
+  heapify(arr, sortBy)
+
+  for (let end = arr.length - 1; end > 0; end--) {
+    swap(arr, end, 0)
+    shiftDown(arr, 0, end - 1, sortBy)
+  }
+
+  return arr
+}
 
 // // Built-in with comparison function (default sorting is "dictionary-style")
 // function builtin_sort(ary) {
@@ -286,52 +344,6 @@ export const selectionSort = (arr: any[], sortBy: SortBy) => {
 //   }
 
 //   return ary
-// }
-
-// // Heap sort
-// function heapSort(ary) {
-//   heapify(ary)
-
-//   for (let end = ary.length - 1; end > 0; end--) {
-//     swap(ary, end, 0)
-//     shiftDown(ary, 0, end - 1)
-//   }
-
-//   return ary
-// }
-
-// function heapify(ary) {
-//   for (let start = (ary.length >> 1) - 1; start >= 0; start--) {
-//     shiftDown(ary, start, ary.length - 1)
-//   }
-// }
-
-// function shiftDown(ary, start, end) {
-//   let root = start
-//   let child
-//   let s
-
-//   s
-
-//   while (root * 2 + 1 <= end) {
-//     child = root * 2 + 1
-//     s = root
-
-//     if (ary[s] < ary[child]) {
-//       s = child
-//     }
-
-//     if (child + 1 <= end && ary[s] < ary[child + 1]) {
-//       s = child + 1
-//     }
-
-//     if (s !== root) {
-//       swap(ary, root, s)
-//       root = s
-//     } else {
-//       return
-//     }
-//   }
 // }
 
 // // Shell sort

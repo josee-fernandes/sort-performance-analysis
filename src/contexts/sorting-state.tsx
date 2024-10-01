@@ -15,6 +15,7 @@ type SortingType =
   | 'insertion'
   | 'merge'
   | 'selection'
+  | 'heap'
 
 interface SortingStateContext {
   nowSorting: SortingType
