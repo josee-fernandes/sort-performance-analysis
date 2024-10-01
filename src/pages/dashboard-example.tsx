@@ -16,6 +16,8 @@ import TeamSwitcher from '@/components/team-switcher'
 import { UserNav } from '@/components/user-nav'
 
 export default function DashboardPage() {
+  return <></>
+
   return (
     <div className="flex-col flex">
       <div className="border-b">

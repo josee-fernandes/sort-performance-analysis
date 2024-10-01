@@ -75,6 +75,8 @@ const TestTablePage: NextPage = () => {
     getData().then((response) => setData(response))
   }, [])
 
+  return <></>
+
   return (
     <div className="container mx-auto rounded-md border">
       <Table>
