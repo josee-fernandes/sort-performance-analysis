@@ -8,6 +8,7 @@ interface SortCardProps {
   time: number
   count: number
   isSorting: boolean
+  isActive: boolean
   error?: string
   icon?: React.ReactNode
 }
@@ -17,11 +18,12 @@ export const SortCard: React.FC<SortCardProps> = ({
   time,
   count,
   isSorting,
+  isActive,
   error,
   icon,
 }) => {
   return (
-    <Card>
+    <Card className={cn('bg-card transition-all', isActive && 'bg-muted')}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{name}</CardTitle>
         {icon ? (

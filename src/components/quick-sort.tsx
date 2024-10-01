@@ -4,6 +4,7 @@ import { SortCard } from './sort-card'
 import { Zap } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { quickSort } from '@/utils/sort'
+import { useSortingState } from '@/contexts/sorting-state'
 
 interface QuickSortCardProps {
   data: any[]
@@ -14,7 +15,7 @@ export const QuickSortCard: React.FC<QuickSortCardProps> = ({
   data,
   sortBy,
 }) => {
-  console.log('Renderizado', sortBy)
+  const { nowSorting, updateNowSorting } = useSortingState()
 
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
@@ -47,10 +48,10 @@ export const QuickSortCard: React.FC<QuickSortCardProps> = ({
   )
 
   useEffect(() => {
-    if (data?.length) {
-      sortAndMeasureTime(data)
+    if (data?.length && nowSorting === 'quick') {
+      sortAndMeasureTime(data).then(() => updateNowSorting('bubble'))
     }
-  }, [data, sortAndMeasureTime])
+  }, [data, sortAndMeasureTime, nowSorting, updateNowSorting])
 
   return (
     <SortCard
@@ -58,6 +59,7 @@ export const QuickSortCard: React.FC<QuickSortCardProps> = ({
       time={time}
       count={data?.length}
       isSorting={isSorting}
+      isActive={nowSorting === 'quick'}
       error={error}
       icon={
         <Zap

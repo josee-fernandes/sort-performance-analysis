@@ -4,6 +4,7 @@ import { SortCard } from './sort-card'
 import { CircleDashed } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { bubbleSort } from '@/utils/sort'
+import { useSortingState } from '@/contexts/sorting-state'
 
 interface BubbleSortCardProps {
   data: any[]
@@ -14,6 +15,8 @@ export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
   data,
   sortBy,
 }) => {
+  const { nowSorting, updateNowSorting } = useSortingState()
+
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -43,10 +46,10 @@ export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
   )
 
   useEffect(() => {
-    if (data?.length) {
-      sortAndMeasureTime(data)
+    if (data?.length && nowSorting === 'bubble') {
+      sortAndMeasureTime(data).then(() => updateNowSorting('cocktail'))
     }
-  }, [data, sortAndMeasureTime])
+  }, [data, sortAndMeasureTime, nowSorting, updateNowSorting])
 
   return (
     <SortCard
@@ -54,6 +57,7 @@ export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
       time={time}
       count={data?.length}
       isSorting={isSorting}
+      isActive={nowSorting === 'bubble'}
       error={error}
       icon={
         <CircleDashed

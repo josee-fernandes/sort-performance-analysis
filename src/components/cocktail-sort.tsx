@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback, useEffect, useState } from 'react'
+import { use, useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
 import { Martini } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { cocktailSort } from '@/utils/sort'
+import { useSortingState } from '@/contexts/sorting-state'
 
 interface CocktailSortCardProps {
   data: any[]
@@ -14,6 +15,8 @@ export const CocktailSortCard: React.FC<CocktailSortCardProps> = ({
   data,
   sortBy,
 }) => {
+  const { nowSorting, updateNowSorting } = useSortingState()
+
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -42,10 +45,10 @@ export const CocktailSortCard: React.FC<CocktailSortCardProps> = ({
   )
 
   useEffect(() => {
-    if (data?.length) {
-      sortAndMeasureTime(data)
+    if (data?.length && nowSorting === 'cocktail') {
+      sortAndMeasureTime(data).then(() => updateNowSorting('insertion'))
     }
-  }, [data, sortAndMeasureTime])
+  }, [data, sortAndMeasureTime, nowSorting, updateNowSorting])
 
   return (
     <SortCard
@@ -53,6 +56,7 @@ export const CocktailSortCard: React.FC<CocktailSortCardProps> = ({
       time={time}
       count={data?.length}
       isSorting={isSorting}
+      isActive={nowSorting === 'cocktail'}
       error={error}
       icon={
         <Martini

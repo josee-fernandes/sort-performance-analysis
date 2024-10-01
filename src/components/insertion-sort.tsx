@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback, useEffect, useState } from 'react'
+import { use, useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
 import { BetweenVerticalStart } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { insertionSort } from '@/utils/sort'
+import { useSortingState } from '@/contexts/sorting-state'
 
 interface InsertionSortCardProps {
   data: any[]
@@ -14,7 +15,7 @@ export const InsertionSortCard: React.FC<InsertionSortCardProps> = ({
   data,
   sortBy,
 }) => {
-  console.log('📥 Insertion by', sortBy)
+  const { nowSorting, updateNowSorting } = useSortingState()
 
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
@@ -22,7 +23,7 @@ export const InsertionSortCard: React.FC<InsertionSortCardProps> = ({
 
   const sortAndMeasureTime = useCallback(
     async (arr: any[]) => {
-      console.log('by', sortBy)
+      console.log('📥 Insertion by', sortBy)
 
       try {
         setIsSorting(true)
@@ -45,10 +46,10 @@ export const InsertionSortCard: React.FC<InsertionSortCardProps> = ({
   )
 
   useEffect(() => {
-    if (data?.length) {
-      sortAndMeasureTime(data)
+    if (data?.length && nowSorting === 'insertion') {
+      sortAndMeasureTime(data).then(() => updateNowSorting('none'))
     }
-  }, [data, sortAndMeasureTime])
+  }, [data, sortAndMeasureTime, nowSorting, updateNowSorting])
 
   return (
     <SortCard
@@ -56,6 +57,7 @@ export const InsertionSortCard: React.FC<InsertionSortCardProps> = ({
       time={time}
       count={data?.length}
       isSorting={isSorting}
+      isActive={nowSorting === 'insertion'}
       error={error}
       icon={
         <BetweenVerticalStart
