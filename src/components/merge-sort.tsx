@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
-import { Martini } from 'lucide-react'
+import { BetweenVerticalStart } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { cocktailSort } from '@/utils/sort'
+import { mergeSort } from '@/utils/sort'
 import { useSortingState } from '@/contexts/sorting-state'
 
-interface CocktailSortCardProps {
+interface MergeSortCardProps {
   data: any[]
   sortBy: 'number' | 'name' | 'id'
 }
 
-export const CocktailSortCard: React.FC<CocktailSortCardProps> = ({
+export const MergeSortCard: React.FC<MergeSortCardProps> = ({
   data,
   sortBy,
 }) => {
@@ -23,18 +23,19 @@ export const CocktailSortCard: React.FC<CocktailSortCardProps> = ({
 
   const sortAndMeasureTime = useCallback(
     async (arr: any[]) => {
-      console.log('🍸 Cocktail by', sortBy)
+      console.log('📥 Insertion by', sortBy)
 
       try {
         setIsSorting(true)
 
-        const startCocktailSort = performance.now()
-        await new Promise((resolve) => resolve(cocktailSort(arr, sortBy)))
-        const endCocktailSort = performance.now()
-        const cocktailSortTimeSpend = endCocktailSort - startCocktailSort
-        setTime(cocktailSortTimeSpend)
+        const startMergeSort = performance.now()
+        await new Promise((resolve) => resolve(mergeSort(arr, sortBy)))
+        const endMergeSort = performance.now()
+        const mergeSortTimeSpend = endMergeSort - startMergeSort
+
+        setTime(mergeSortTimeSpend)
       } catch (error: any) {
-        setError(error?.message ?? 'Cocktail sort error')
+        setError(error?.message ?? 'Merge sort error')
 
         return 0
       } finally {
@@ -45,21 +46,21 @@ export const CocktailSortCard: React.FC<CocktailSortCardProps> = ({
   )
 
   useEffect(() => {
-    if (data?.length && nowSorting === 'cocktail') {
-      sortAndMeasureTime(data).then(() => updateNowSorting('insertion'))
+    if (data?.length && nowSorting === 'merge') {
+      sortAndMeasureTime(data).then(() => updateNowSorting('none'))
     }
   }, [data, sortAndMeasureTime, nowSorting, updateNowSorting])
 
   return (
     <SortCard
-      name="Cocktail Sort"
+      name="Merge Sort"
       time={time}
       count={data?.length}
       isSorting={isSorting}
-      isActive={nowSorting === 'cocktail'}
+      isActive={nowSorting === 'merge'}
       error={error}
       icon={
-        <Martini
+        <BetweenVerticalStart
           className={cn(
             'h-4 w-4 text-muted-foreground',
             isSorting && 'animate-spin',
@@ -70,4 +71,4 @@ export const CocktailSortCard: React.FC<CocktailSortCardProps> = ({
   )
 }
 
-CocktailSortCard.displayName = 'CocktailSortCard'
+MergeSortCard.displayName = 'MergeSortCard'

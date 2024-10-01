@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { use, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
 import { BetweenVerticalStart } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -47,7 +47,7 @@ export const InsertionSortCard: React.FC<InsertionSortCardProps> = ({
 
   useEffect(() => {
     if (data?.length && nowSorting === 'insertion') {
-      sortAndMeasureTime(data).then(() => updateNowSorting('none'))
+      sortAndMeasureTime(data).then(() => updateNowSorting('merge'))
     }
   }, [data, sortAndMeasureTime, nowSorting, updateNowSorting])
 

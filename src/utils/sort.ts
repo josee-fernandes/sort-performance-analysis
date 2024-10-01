@@ -67,7 +67,16 @@ export const cocktailSort = async (array: any[], sortBy: SortBy) => {
     swapped = false
 
     for (let i = start; i < end - 1; ++i) {
-      if (a[i] > a[i + 1]) {
+      const current =
+        sortBy === 'id' ? a[i]?.id : sortBy === 'name' ? a[i]?.name : a[i]
+      const next =
+        sortBy === 'id'
+          ? a[i + 1]?.id
+          : sortBy === 'name'
+            ? a[i + 1]?.name
+            : a[i + 1]
+
+      if (current > next) {
         const temp = a[i]
         a[i] = a[i + 1]
         a[i + 1] = temp
@@ -246,44 +255,57 @@ export const insertionSort = (arr: any[], sortBy: SortBy) => {
 // }
 
 // // Merge sort
-// function merge_sort(ary) {
-//   if (ary.length <= 1) {
-//     return ary
-//   }
+const merge = (left: any[], right: any[], sortBy: SortBy) => {
+  const result = []
+  let li = 0
+  let ri = 0
 
-//   const m = ary.length >> 1
+  while (li < left.length || ri < right.length) {
+    if (li < left.length && ri < right.length) {
+      const currentLeft =
+        sortBy === 'id'
+          ? left[li]?.id
+          : sortBy === 'name'
+            ? left[li]?.name
+            : left[li]
+      const currentRight =
+        sortBy === 'id'
+          ? right[ri]?.id
+          : sortBy === 'name'
+            ? right[ri]?.name
+            : right[ri]
 
-//   const left = ary.slice(0, m)
-//   const right = ary.slice(m)
+      if (currentLeft <= currentRight) {
+        result.push(left[li])
+        li++
+      } else {
+        result.push(right[ri])
+        ri++
+      }
+    } else if (li < left.length) {
+      result.push(left[li])
+      li++
+    } else if (ri < right.length) {
+      result.push(right[ri])
+      ri++
+    }
+  }
 
-//   return merge(merge_sort(left), merge_sort(right))
-// }
+  return result
+}
 
-// function merge(left, right) {
-//   const result = []
-//   let li = 0
-//   let ri = 0
+export const mergeSort = (arr: any[], sortBy: SortBy): any[] => {
+  if (arr.length <= 1) {
+    return arr
+  }
 
-//   while (li < left.length || ri < right.length) {
-//     if (li < left.length && ri < right.length) {
-//       if (left[li] <= right[ri]) {
-//         result.push(left[li])
-//         li++
-//       } else {
-//         result.push(right[ri])
-//         ri++
-//       }
-//     } else if (li < left.length) {
-//       result.push(left[li])
-//       li++
-//     } else if (ri < right.length) {
-//       result.push(right[ri])
-//       ri++
-//     }
-//   }
+  const m = arr.length >> 1
 
-//   return result
-// }
+  const left = arr.slice(0, m)
+  const right = arr.slice(m)
+
+  return merge(mergeSort(left, sortBy), mergeSort(right, sortBy), sortBy)
+}
 
 // // Shell sort
 // function shell_sort(ary) {

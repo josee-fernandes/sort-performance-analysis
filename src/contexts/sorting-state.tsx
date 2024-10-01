@@ -7,7 +7,13 @@ import {
   useState,
 } from 'react'
 
-type SortingType = 'none' | 'quick' | 'bubble' | 'cocktail' | 'insertion'
+type SortingType =
+  | 'none'
+  | 'quick'
+  | 'bubble'
+  | 'cocktail'
+  | 'insertion'
+  | 'merge'
 
 interface SortingStateContext {
   nowSorting: SortingType
