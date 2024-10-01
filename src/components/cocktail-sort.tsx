@@ -20,16 +20,15 @@ export const CocktailSortCard: React.FC<CocktailSortCardProps> = ({
 
   const sortAndMeasureTime = useCallback(
     async (arr: any[]) => {
-      console.log('by', sortBy)
+      console.log('🍸 Cocktail by', sortBy)
 
       try {
         setIsSorting(true)
 
         const startCocktailSort = performance.now()
-        await new Promise((resolve) => resolve(cocktailSort(arr)))
+        await new Promise((resolve) => resolve(cocktailSort(arr, sortBy)))
         const endCocktailSort = performance.now()
         const cocktailSortTimeSpend = endCocktailSort - startCocktailSort
-
         setTime(cocktailSortTimeSpend)
       } catch (error: any) {
         setError(error?.message ?? 'Cocktail sort error')

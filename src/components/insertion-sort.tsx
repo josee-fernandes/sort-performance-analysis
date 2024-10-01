@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
-import { BetweenVerticalStart, Zap } from 'lucide-react'
+import { BetweenVerticalStart } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { insertionSort } from '@/utils/sort'
 
@@ -14,7 +14,7 @@ export const InsertionSortCard: React.FC<InsertionSortCardProps> = ({
   data,
   sortBy,
 }) => {
-  console.log('Renderizado', sortBy)
+  console.log('📥 Insertion by', sortBy)
 
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)

@@ -22,7 +22,7 @@ export const QuickSortCard: React.FC<QuickSortCardProps> = ({
 
   const sortAndMeasureTime = useCallback(
     async (arr: any[]) => {
-      console.log('by', sortBy)
+      console.log('⚡ Quick by', sortBy)
 
       try {
         setIsSorting(true)

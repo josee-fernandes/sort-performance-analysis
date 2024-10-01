@@ -20,7 +20,7 @@ export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
 
   const sortAndMeasureTime = useCallback(
     async (arr: any[]) => {
-      console.log('by', sortBy)
+      console.log('🫧 Bubble by', sortBy)
 
       try {
         setIsSorting(true)
