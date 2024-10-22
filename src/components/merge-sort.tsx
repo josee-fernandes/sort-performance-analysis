@@ -3,8 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
 import { Merge } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { mergeSort } from '@/utils/sort'
-import { useSortingState } from '@/contexts/sorting-state'
+import { appApi } from '@/lib/axios'
 
 interface MergeSortCardProps {
   data: any[]
@@ -15,8 +14,6 @@ export const MergeSortCard: React.FC<MergeSortCardProps> = ({
   data,
   sortBy,
 }) => {
-  const { nowSorting, updateNowSorting } = useSortingState()
-
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -28,12 +25,13 @@ export const MergeSortCard: React.FC<MergeSortCardProps> = ({
       try {
         setIsSorting(true)
 
-        const startMergeSort = performance.now()
-        await new Promise((resolve) => resolve(mergeSort(arr, sortBy)))
-        const endMergeSort = performance.now()
-        const mergeSortTimeSpend = endMergeSort - startMergeSort
+        const response = await appApi.post('/sort', {
+          data: arr,
+          sortBy,
+          algorithm: 'merge',
+        })
 
-        setTime(mergeSortTimeSpend)
+        setTime(response.data.result)
       } catch (error: any) {
         setError(error?.message ?? 'Merge sort error')
 
@@ -46,10 +44,10 @@ export const MergeSortCard: React.FC<MergeSortCardProps> = ({
   )
 
   useEffect(() => {
-    if (data?.length && nowSorting === 'merge') {
-      sortAndMeasureTime(data).then(() => updateNowSorting('selection'))
+    if (data?.length) {
+      sortAndMeasureTime(data)
     }
-  }, [data, sortAndMeasureTime, nowSorting, updateNowSorting])
+  }, [data, sortAndMeasureTime])
 
   return (
     <SortCard
@@ -57,7 +55,7 @@ export const MergeSortCard: React.FC<MergeSortCardProps> = ({
       time={time}
       count={data?.length}
       isSorting={isSorting}
-      isActive={nowSorting === 'merge'}
+      isActive={isSorting}
       error={error}
       icon={
         <Merge

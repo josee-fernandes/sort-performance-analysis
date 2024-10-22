@@ -3,8 +3,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
 import { Wand } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { selectionSort } from '@/utils/sort'
 import { useSortingState } from '@/contexts/sorting-state'
+import { appApi } from '@/lib/axios'
 
 interface SelectionSortCardProps {
   data: any[]
@@ -15,8 +15,6 @@ export const SelectionSortCard: React.FC<SelectionSortCardProps> = ({
   data,
   sortBy,
 }) => {
-  const { nowSorting, updateNowSorting } = useSortingState()
-
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -28,12 +26,13 @@ export const SelectionSortCard: React.FC<SelectionSortCardProps> = ({
       try {
         setIsSorting(true)
 
-        const startSelectionSort = performance.now()
-        await new Promise((resolve) => resolve(selectionSort(arr, sortBy)))
-        const endSelectionSort = performance.now()
-        const selectionSortTimeSpend = endSelectionSort - startSelectionSort
+        const response = await appApi.post('/sort', {
+          data: arr,
+          sortBy,
+          algorithm: 'selection',
+        })
 
-        setTime(selectionSortTimeSpend)
+        setTime(response.data.result)
       } catch (error: any) {
         setError(error?.message ?? 'Selection sort error')
 
@@ -46,10 +45,10 @@ export const SelectionSortCard: React.FC<SelectionSortCardProps> = ({
   )
 
   useEffect(() => {
-    if (data?.length && nowSorting === 'selection') {
-      sortAndMeasureTime(data).then(() => updateNowSorting('heap'))
+    if (data?.length) {
+      sortAndMeasureTime(data)
     }
-  }, [data, sortAndMeasureTime, nowSorting, updateNowSorting])
+  }, [data, sortAndMeasureTime])
 
   return (
     <SortCard
@@ -57,7 +56,7 @@ export const SelectionSortCard: React.FC<SelectionSortCardProps> = ({
       time={time}
       count={data?.length}
       isSorting={isSorting}
-      isActive={nowSorting === 'selection'}
+      isActive={isSorting}
       error={error}
       icon={
         <Wand

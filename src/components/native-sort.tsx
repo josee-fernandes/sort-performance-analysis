@@ -3,8 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
 import { Braces } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { nativeSort } from '@/utils/sort'
-import { useSortingState } from '@/contexts/sorting-state'
+import { appApi } from '@/lib/axios'
 
 interface NativeSortCardProps {
   data: any[]
@@ -15,8 +14,6 @@ export const NativeSortCard: React.FC<NativeSortCardProps> = ({
   data,
   sortBy,
 }) => {
-  const { nowSorting, updateNowSorting } = useSortingState()
-
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -28,12 +25,13 @@ export const NativeSortCard: React.FC<NativeSortCardProps> = ({
       try {
         setIsSorting(true)
 
-        const startNativeSort = performance.now()
-        await new Promise((resolve) => resolve(nativeSort(arr, sortBy)))
-        const endNativeSort = performance.now()
-        const nativeSortTimeSpend = endNativeSort - startNativeSort
+        const response = await appApi.post('/sort', {
+          data: arr,
+          sortBy,
+          algorithm: 'native',
+        })
 
-        setTime(nativeSortTimeSpend)
+        setTime(response.data.result)
       } catch (error: any) {
         setError(error?.message ?? 'Native sort error')
 
@@ -46,10 +44,10 @@ export const NativeSortCard: React.FC<NativeSortCardProps> = ({
   )
 
   useEffect(() => {
-    if (data?.length && nowSorting === 'native') {
-      sortAndMeasureTime(data).then(() => updateNowSorting('none'))
+    if (data?.length) {
+      sortAndMeasureTime(data)
     }
-  }, [data, sortAndMeasureTime, nowSorting, updateNowSorting])
+  }, [data, sortAndMeasureTime])
 
   return (
     <SortCard
@@ -57,7 +55,7 @@ export const NativeSortCard: React.FC<NativeSortCardProps> = ({
       time={time}
       count={data?.length}
       isSorting={isSorting}
-      isActive={nowSorting === 'native'}
+      isActive={isSorting}
       error={error}
       icon={
         <Braces

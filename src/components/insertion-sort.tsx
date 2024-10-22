@@ -3,8 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
 import { BetweenVerticalStart } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { insertionSort } from '@/utils/sort'
-import { useSortingState } from '@/contexts/sorting-state'
+import { appApi } from '@/lib/axios'
 
 interface InsertionSortCardProps {
   data: any[]
@@ -15,8 +14,6 @@ export const InsertionSortCard: React.FC<InsertionSortCardProps> = ({
   data,
   sortBy,
 }) => {
-  const { nowSorting, updateNowSorting } = useSortingState()
-
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -28,12 +25,13 @@ export const InsertionSortCard: React.FC<InsertionSortCardProps> = ({
       try {
         setIsSorting(true)
 
-        const startInsertionSort = performance.now()
-        await new Promise((resolve) => resolve(insertionSort(arr, sortBy)))
-        const endInsertionSort = performance.now()
-        const insertionSortTimeSpend = endInsertionSort - startInsertionSort
+        const response = await appApi.post('/sort', {
+          data: arr,
+          sortBy,
+          algorithm: 'insertion',
+        })
 
-        setTime(insertionSortTimeSpend)
+        setTime(response.data.result)
       } catch (error: any) {
         setError(error?.message ?? 'Insertion sort error')
 
@@ -46,10 +44,10 @@ export const InsertionSortCard: React.FC<InsertionSortCardProps> = ({
   )
 
   useEffect(() => {
-    if (data?.length && nowSorting === 'insertion') {
-      sortAndMeasureTime(data).then(() => updateNowSorting('merge'))
+    if (data?.length) {
+      sortAndMeasureTime(data)
     }
-  }, [data, sortAndMeasureTime, nowSorting, updateNowSorting])
+  }, [data, sortAndMeasureTime])
 
   return (
     <SortCard
@@ -57,7 +55,7 @@ export const InsertionSortCard: React.FC<InsertionSortCardProps> = ({
       time={time}
       count={data?.length}
       isSorting={isSorting}
-      isActive={nowSorting === 'insertion'}
+      isActive={isSorting}
       error={error}
       icon={
         <BetweenVerticalStart

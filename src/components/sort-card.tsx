@@ -40,7 +40,7 @@ export const SortCard: React.FC<SortCardProps> = ({
             isSorting && 'text-amber-500',
           )}
         >
-          {time}ms
+          {time.toFixed(2)}ms
         </p>
         <p className="text-xs text-muted-foreground">
           {isSorting && `Sorting ${count} items`}

@@ -3,8 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
 import { Zap } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { quickSort } from '@/utils/sort'
-import { useSortingState } from '@/contexts/sorting-state'
+import { appApi } from '@/lib/axios'
 
 interface QuickSortCardProps {
   data: any[]
@@ -15,8 +14,6 @@ export const QuickSortCard: React.FC<QuickSortCardProps> = ({
   data,
   sortBy,
 }) => {
-  const { nowSorting, updateNowSorting } = useSortingState()
-
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -28,14 +25,13 @@ export const QuickSortCard: React.FC<QuickSortCardProps> = ({
       try {
         setIsSorting(true)
 
-        const startQuickSort = performance.now()
-        await new Promise((resolve) =>
-          resolve(quickSort(arr, 0, arr.length - 1, sortBy)),
-        )
-        const endQuickSort = performance.now()
-        const quickSortTimeSpend = endQuickSort - startQuickSort
+        const response = await appApi.post('/sort', {
+          data: arr,
+          sortBy,
+          algorithm: 'quick',
+        })
 
-        setTime(quickSortTimeSpend)
+        setTime(response.data.result)
       } catch (error: any) {
         setError(error?.message ?? 'Quick sort error')
 
@@ -48,10 +44,10 @@ export const QuickSortCard: React.FC<QuickSortCardProps> = ({
   )
 
   useEffect(() => {
-    if (data?.length && nowSorting === 'quick') {
-      sortAndMeasureTime(data).then(() => updateNowSorting('bubble'))
+    if (data?.length) {
+      sortAndMeasureTime(data)
     }
-  }, [data, sortAndMeasureTime, nowSorting, updateNowSorting])
+  }, [data, sortAndMeasureTime])
 
   return (
     <SortCard
@@ -59,7 +55,7 @@ export const QuickSortCard: React.FC<QuickSortCardProps> = ({
       time={time}
       count={data?.length}
       isSorting={isSorting}
-      isActive={nowSorting === 'quick'}
+      isActive={isSorting}
       error={error}
       icon={
         <Zap

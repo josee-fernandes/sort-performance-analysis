@@ -3,8 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
 import { CircleDashed } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { bubbleSort } from '@/utils/sort'
-import { useSortingState } from '@/contexts/sorting-state'
+import { appApi } from '@/lib/axios'
 
 interface BubbleSortCardProps {
   data: any[]
@@ -15,8 +14,6 @@ export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
   data,
   sortBy,
 }) => {
-  const { nowSorting, updateNowSorting } = useSortingState()
-
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -28,12 +25,13 @@ export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
       try {
         setIsSorting(true)
 
-        const startBubbleSort = performance.now()
-        await new Promise((resolve) => resolve(bubbleSort(arr, sortBy)))
-        const endBubbleSort = performance.now()
-        const bubbleSortTimeSpend = endBubbleSort - startBubbleSort
+        const response = await appApi.post('/sort', {
+          data: arr,
+          sortBy,
+          algorithm: 'bubble',
+        })
 
-        setTime(bubbleSortTimeSpend)
+        setTime(response.data.result)
       } catch (error: any) {
         setError(error?.message ?? 'Bubble sort error')
 
@@ -46,10 +44,10 @@ export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
   )
 
   useEffect(() => {
-    if (data?.length && nowSorting === 'bubble') {
-      sortAndMeasureTime(data).then(() => updateNowSorting('cocktail'))
+    if (data?.length) {
+      sortAndMeasureTime(data)
     }
-  }, [data, sortAndMeasureTime, nowSorting, updateNowSorting])
+  }, [data, sortAndMeasureTime])
 
   return (
     <SortCard
@@ -57,7 +55,7 @@ export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
       time={time}
       count={data?.length}
       isSorting={isSorting}
-      isActive={nowSorting === 'bubble'}
+      isActive={isSorting}
       error={error}
       icon={
         <CircleDashed

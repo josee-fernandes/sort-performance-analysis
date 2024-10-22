@@ -3,8 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
 import { Network } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { heapSort } from '@/utils/sort'
-import { useSortingState } from '@/contexts/sorting-state'
+import { appApi } from '@/lib/axios'
 
 interface HeapSortCardProps {
   data: any[]
@@ -12,8 +11,6 @@ interface HeapSortCardProps {
 }
 
 export const HeapSortCard: React.FC<HeapSortCardProps> = ({ data, sortBy }) => {
-  const { nowSorting, updateNowSorting } = useSortingState()
-
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -25,12 +22,13 @@ export const HeapSortCard: React.FC<HeapSortCardProps> = ({ data, sortBy }) => {
       try {
         setIsSorting(true)
 
-        const startHeapSort = performance.now()
-        await new Promise((resolve) => resolve(heapSort(arr, sortBy)))
-        const endHeapSort = performance.now()
-        const heapSortTimeSpend = endHeapSort - startHeapSort
+        const response = await appApi.post('/sort', {
+          data: arr,
+          sortBy,
+          algorithm: 'heap',
+        })
 
-        setTime(heapSortTimeSpend)
+        setTime(response.data.result)
       } catch (error: any) {
         setError(error?.message ?? 'Heap sort error')
 
@@ -43,10 +41,10 @@ export const HeapSortCard: React.FC<HeapSortCardProps> = ({ data, sortBy }) => {
   )
 
   useEffect(() => {
-    if (data?.length && nowSorting === 'heap') {
-      sortAndMeasureTime(data).then(() => updateNowSorting('native'))
+    if (data?.length) {
+      sortAndMeasureTime(data)
     }
-  }, [data, sortAndMeasureTime, nowSorting, updateNowSorting])
+  }, [data, sortAndMeasureTime])
 
   return (
     <SortCard
@@ -54,7 +52,7 @@ export const HeapSortCard: React.FC<HeapSortCardProps> = ({ data, sortBy }) => {
       time={time}
       count={data?.length}
       isSorting={isSorting}
-      isActive={nowSorting === 'heap'}
+      isActive={isSorting}
       error={error}
       icon={
         <Network

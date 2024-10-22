@@ -3,8 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
 import { Martini } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { cocktailSort } from '@/utils/sort'
-import { useSortingState } from '@/contexts/sorting-state'
+import { appApi } from '@/lib/axios'
 
 interface CocktailSortCardProps {
   data: any[]
@@ -15,8 +14,6 @@ export const CocktailSortCard: React.FC<CocktailSortCardProps> = ({
   data,
   sortBy,
 }) => {
-  const { nowSorting, updateNowSorting } = useSortingState()
-
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -28,11 +25,13 @@ export const CocktailSortCard: React.FC<CocktailSortCardProps> = ({
       try {
         setIsSorting(true)
 
-        const startCocktailSort = performance.now()
-        await new Promise((resolve) => resolve(cocktailSort(arr, sortBy)))
-        const endCocktailSort = performance.now()
-        const cocktailSortTimeSpend = endCocktailSort - startCocktailSort
-        setTime(cocktailSortTimeSpend)
+        const response = await appApi.post('/sort', {
+          data: arr,
+          sortBy,
+          algorithm: 'cocktail',
+        })
+
+        setTime(response.data.result)
       } catch (error: any) {
         setError(error?.message ?? 'Cocktail sort error')
 
@@ -45,10 +44,10 @@ export const CocktailSortCard: React.FC<CocktailSortCardProps> = ({
   )
 
   useEffect(() => {
-    if (data?.length && nowSorting === 'cocktail') {
-      sortAndMeasureTime(data).then(() => updateNowSorting('insertion'))
+    if (data?.length) {
+      sortAndMeasureTime(data)
     }
-  }, [data, sortAndMeasureTime, nowSorting, updateNowSorting])
+  }, [data, sortAndMeasureTime])
 
   return (
     <SortCard
@@ -56,7 +55,7 @@ export const CocktailSortCard: React.FC<CocktailSortCardProps> = ({
       time={time}
       count={data?.length}
       isSorting={isSorting}
-      isActive={nowSorting === 'cocktail'}
+      isActive={isSorting}
       error={error}
       icon={
         <Martini
