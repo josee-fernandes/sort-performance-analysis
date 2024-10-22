@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { SortCard } from './sort-card'
 import { Wand } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useSortingState } from '@/contexts/sorting-state'
 import { appApi } from '@/lib/axios'
 
 interface SelectionSortCardProps {
