@@ -111,6 +111,7 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
 
     response.status(405).json({ error: 'Method not allowed' })
   } catch (error) {
+    console.error({ error })
     response.status(500).json({ error })
   }
 }

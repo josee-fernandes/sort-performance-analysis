@@ -1,6 +1,12 @@
-import { CartesianGrid, LabelList, Line, LineChart, YAxis } from 'recharts'
+import {
+  CartesianGrid,
+  LabelList,
+  Line,
+  LineChart,
+  XAxis,
+  YAxis,
+} from 'recharts'
 
-import { Card, CardContent } from '@/components/ui/card'
 import {
   ChartConfig,
   ChartContainer,
@@ -22,10 +28,10 @@ const chartConfig = {
     label: 'Time (ms)',
     color: 'hsl(var(--chart-2))',
   },
-  quick: {
-    label: 'Quick',
-    color: 'hsl(var(--chart-1))',
-  },
+  // quick: {
+  //   label: 'Quick',
+  //   color: 'hsl(var(--chart-1))',
+  // },
   bubble: {
     label: 'Bubble',
     color: 'hsl(var(--chart-2))',
@@ -179,8 +185,8 @@ export const CustomLineChart: React.FC<CustomLineChartProps> = ({ source }) => {
   if (chartData.find((d) => d.time === '0.00')) return <></>
 
   return (
-    <Card>
-      <CardContent>
+    <>
+      <div>
         <ChartContainer config={chartConfig}>
           <LineChart
             accessibilityLayer
@@ -202,16 +208,16 @@ export const CustomLineChart: React.FC<CustomLineChartProps> = ({ source }) => {
                 />
               }
             />
-            <YAxis
-              tickCount={10}
-              tickFormatter={(value) => value.toFixed(1)}
-              type="number"
-              unit="ms"
-              domain={[-1000, 6000]}
+            <XAxis
+              dataKey="algorithm"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
             />
+            <YAxis tickCount={10} type="number" unit="ms" />
             <Line
               dataKey="time"
-              type="natural"
+              type="linear"
               stroke="hsl(var(--foreground))"
               strokeWidth={2}
               dot={{
@@ -234,8 +240,8 @@ export const CustomLineChart: React.FC<CustomLineChartProps> = ({ source }) => {
             </Line>
           </LineChart>
         </ChartContainer>
-      </CardContent>
-    </Card>
+      </div>
+    </>
   )
 }
 
