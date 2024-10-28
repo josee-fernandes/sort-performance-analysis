@@ -10,11 +10,28 @@ import {
   quickSort,
   selectionSort,
 } from '@/utils/sort'
+import { shuffle } from '@/utils/array'
+
+import sample from '@/services/sample.json'
+import { getPhotos } from '@/services/placeholder-api'
+
+const numbers = shuffle(Array.from({ length: 20000 }, (_, i) => i))
+const shuffledSample = shuffle(sample as Sample)
 
 const handler = async (request: NextApiRequest, response: NextApiResponse) => {
   try {
     if (request.method === 'POST') {
-      const { data, sortBy, algorithm } = request.body
+      const { sortBy, algorithm, source } = request.body
+
+      let data = []
+
+      if (source === 'placeholderApi') {
+        data = await getPhotos()
+      } else if (source === 'sample') {
+        data = shuffledSample
+      } else {
+        data = numbers
+      }
 
       let result = 0
 
@@ -99,11 +116,7 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
 }
 
 export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '5mb',
-    },
-  },
+  maxDuration: 20,
 }
 
 export default handler
