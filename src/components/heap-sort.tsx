@@ -5,6 +5,7 @@ import { Network } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { appApi } from '@/lib/axios'
 import { SourceLength } from '@/constants/sort'
+import { useChartData } from '@/contexts/chart-data'
 
 interface HeapSortCardProps {
   sortBy: SortBy
@@ -15,6 +16,9 @@ export const HeapSortCard: React.FC<HeapSortCardProps> = ({
   sortBy,
   source,
 }) => {
+  const { setPlaceholderApiHeapTime, setSampleHeapTime, setNumbersHeapTime } =
+    useChartData()
+
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -31,6 +35,18 @@ export const HeapSortCard: React.FC<HeapSortCardProps> = ({
         source,
       })
 
+      switch (source) {
+        case 'placeholderApi':
+          setPlaceholderApiHeapTime(response.data.result)
+          break
+        case 'sample':
+          setSampleHeapTime(response.data.result)
+          break
+        case 'numbers':
+          setNumbersHeapTime(response.data.result)
+          break
+      }
+
       setTime(response.data.result)
     } catch (error: any) {
       setError(error?.message ?? 'Heap sort error')
@@ -39,11 +55,19 @@ export const HeapSortCard: React.FC<HeapSortCardProps> = ({
     } finally {
       setIsSorting(false)
     }
-  }, [sortBy, source])
+  }, [
+    setNumbersHeapTime,
+    setPlaceholderApiHeapTime,
+    setSampleHeapTime,
+    sortBy,
+    source,
+  ])
 
   useEffect(() => {
-    sortAndMeasureTime()
-  }, [sortAndMeasureTime])
+    if (time === 0) {
+      sortAndMeasureTime()
+    }
+  }, [sortAndMeasureTime, time])
 
   return (
     <SortCard

@@ -5,6 +5,7 @@ import { Wand } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { appApi } from '@/lib/axios'
 import { SourceLength } from '@/constants/sort'
+import { useChartData } from '@/contexts/chart-data'
 
 interface SelectionSortCardProps {
   sortBy: SortBy
@@ -15,6 +16,12 @@ export const SelectionSortCard: React.FC<SelectionSortCardProps> = ({
   sortBy,
   source,
 }) => {
+  const {
+    setPlaceholderApiSelectionTime,
+    setSampleSelectionTime,
+    setNumbersSelectionTime,
+  } = useChartData()
+
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -31,6 +38,18 @@ export const SelectionSortCard: React.FC<SelectionSortCardProps> = ({
         source,
       })
 
+      switch (source) {
+        case 'placeholderApi':
+          setPlaceholderApiSelectionTime(response.data.result)
+          break
+        case 'sample':
+          setSampleSelectionTime(response.data.result)
+          break
+        case 'numbers':
+          setNumbersSelectionTime(response.data.result)
+          break
+      }
+
       setTime(response.data.result)
     } catch (error: any) {
       setError(error?.message ?? 'Selection sort error')
@@ -39,11 +58,19 @@ export const SelectionSortCard: React.FC<SelectionSortCardProps> = ({
     } finally {
       setIsSorting(false)
     }
-  }, [sortBy, source])
+  }, [
+    setNumbersSelectionTime,
+    setPlaceholderApiSelectionTime,
+    setSampleSelectionTime,
+    sortBy,
+    source,
+  ])
 
   useEffect(() => {
-    sortAndMeasureTime()
-  }, [sortAndMeasureTime])
+    if (time === 0) {
+      sortAndMeasureTime()
+    }
+  }, [sortAndMeasureTime, time])
 
   return (
     <SortCard

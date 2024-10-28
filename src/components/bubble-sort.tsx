@@ -5,6 +5,7 @@ import { CircleDashed } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { appApi } from '@/lib/axios'
 import { SourceLength } from '@/constants/sort'
+import { useChartData } from '@/contexts/chart-data'
 
 interface BubbleSortCardProps {
   sortBy: SortBy
@@ -15,6 +16,12 @@ export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
   sortBy,
   source,
 }) => {
+  const {
+    setPlaceholderApiBubbleTime,
+    setSampleBubbleTime,
+    setNumbersBubbleTime,
+  } = useChartData()
+
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -31,6 +38,18 @@ export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
         source,
       })
 
+      switch (source) {
+        case 'placeholderApi':
+          setPlaceholderApiBubbleTime(response.data.result)
+          break
+        case 'sample':
+          setSampleBubbleTime(response.data.result)
+          break
+        case 'numbers':
+          setNumbersBubbleTime(response.data.result)
+          break
+      }
+
       setTime(response.data.result)
     } catch (error: any) {
       setError(error?.message ?? 'Bubble sort error')
@@ -39,11 +58,19 @@ export const BubbleSortCard: React.FC<BubbleSortCardProps> = ({
     } finally {
       setIsSorting(false)
     }
-  }, [sortBy, source])
+  }, [
+    setNumbersBubbleTime,
+    setPlaceholderApiBubbleTime,
+    setSampleBubbleTime,
+    sortBy,
+    source,
+  ])
 
   useEffect(() => {
-    sortAndMeasureTime()
-  }, [sortAndMeasureTime])
+    if (time === 0) {
+      sortAndMeasureTime()
+    }
+  }, [sortAndMeasureTime, time])
 
   return (
     <SortCard

@@ -5,6 +5,7 @@ import { BetweenVerticalStart } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { appApi } from '@/lib/axios'
 import { SourceLength } from '@/constants/sort'
+import { useChartData } from '@/contexts/chart-data'
 
 interface InsertionSortCardProps {
   sortBy: SortBy
@@ -15,6 +16,12 @@ export const InsertionSortCard: React.FC<InsertionSortCardProps> = ({
   sortBy,
   source,
 }) => {
+  const {
+    setPlaceholderApiInsertionTime,
+    setSampleInsertionTime,
+    setNumbersInsertionTime,
+  } = useChartData()
+
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -31,6 +38,18 @@ export const InsertionSortCard: React.FC<InsertionSortCardProps> = ({
         source,
       })
 
+      switch (source) {
+        case 'placeholderApi':
+          setPlaceholderApiInsertionTime(response.data.result)
+          break
+        case 'sample':
+          setSampleInsertionTime(response.data.result)
+          break
+        case 'numbers':
+          setNumbersInsertionTime(response.data.result)
+          break
+      }
+
       setTime(response.data.result)
     } catch (error: any) {
       setError(error?.message ?? 'Insertion sort error')
@@ -39,11 +58,19 @@ export const InsertionSortCard: React.FC<InsertionSortCardProps> = ({
     } finally {
       setIsSorting(false)
     }
-  }, [sortBy, source])
+  }, [
+    setNumbersInsertionTime,
+    setPlaceholderApiInsertionTime,
+    setSampleInsertionTime,
+    sortBy,
+    source,
+  ])
 
   useEffect(() => {
-    sortAndMeasureTime()
-  }, [sortAndMeasureTime])
+    if (time === 0) {
+      sortAndMeasureTime()
+    }
+  }, [sortAndMeasureTime, time])
 
   return (
     <SortCard

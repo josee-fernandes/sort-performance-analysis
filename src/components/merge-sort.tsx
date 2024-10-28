@@ -5,6 +5,7 @@ import { Merge } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { appApi } from '@/lib/axios'
 import { SourceLength } from '@/constants/sort'
+import { useChartData } from '@/contexts/chart-data'
 
 interface MergeSortCardProps {
   sortBy: SortBy
@@ -15,6 +16,12 @@ export const MergeSortCard: React.FC<MergeSortCardProps> = ({
   sortBy,
   source,
 }) => {
+  const {
+    setPlaceholderApiMergeTime,
+    setSampleMergeTime,
+    setNumbersMergeTime,
+  } = useChartData()
+
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -31,6 +38,18 @@ export const MergeSortCard: React.FC<MergeSortCardProps> = ({
         source,
       })
 
+      switch (source) {
+        case 'placeholderApi':
+          setPlaceholderApiMergeTime(response.data.result)
+          break
+        case 'sample':
+          setSampleMergeTime(response.data.result)
+          break
+        case 'numbers':
+          setNumbersMergeTime(response.data.result)
+          break
+      }
+
       setTime(response.data.result)
     } catch (error: any) {
       setError(error?.message ?? 'Merge sort error')
@@ -39,11 +58,19 @@ export const MergeSortCard: React.FC<MergeSortCardProps> = ({
     } finally {
       setIsSorting(false)
     }
-  }, [sortBy, source])
+  }, [
+    setNumbersMergeTime,
+    setPlaceholderApiMergeTime,
+    setSampleMergeTime,
+    sortBy,
+    source,
+  ])
 
   useEffect(() => {
-    sortAndMeasureTime()
-  }, [sortAndMeasureTime])
+    if (time === 0) {
+      sortAndMeasureTime()
+    }
+  }, [sortAndMeasureTime, time])
 
   return (
     <SortCard

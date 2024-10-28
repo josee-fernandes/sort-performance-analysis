@@ -5,6 +5,7 @@ import { Zap } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { appApi } from '@/lib/axios'
 import { SourceLength } from '@/constants/sort'
+import { useChartData } from '@/contexts/chart-data'
 
 interface QuickSortCardProps {
   sortBy: SortBy
@@ -15,6 +16,12 @@ export const QuickSortCard: React.FC<QuickSortCardProps> = ({
   sortBy,
   source,
 }) => {
+  const {
+    setPlaceholderApiQuickTime,
+    setSampleQuickTime,
+    setNumbersQuickTime,
+  } = useChartData()
+
   const [isSorting, setIsSorting] = useState(true)
   const [time, setTime] = useState(0)
   const [error, setError] = useState('')
@@ -31,6 +38,18 @@ export const QuickSortCard: React.FC<QuickSortCardProps> = ({
         source,
       })
 
+      switch (source) {
+        case 'placeholderApi':
+          setPlaceholderApiQuickTime(response.data.result)
+          break
+        case 'sample':
+          setSampleQuickTime(response.data.result)
+          break
+        case 'numbers':
+          setNumbersQuickTime(response.data.result)
+          break
+      }
+
       setTime(response.data.result)
     } catch (error: any) {
       setError(error?.message ?? 'Quick sort error')
@@ -39,11 +58,19 @@ export const QuickSortCard: React.FC<QuickSortCardProps> = ({
     } finally {
       setIsSorting(false)
     }
-  }, [sortBy, source])
+  }, [
+    setNumbersQuickTime,
+    setPlaceholderApiQuickTime,
+    setSampleQuickTime,
+    sortBy,
+    source,
+  ])
 
   useEffect(() => {
-    sortAndMeasureTime()
-  }, [sortAndMeasureTime])
+    if (time === 0) {
+      sortAndMeasureTime()
+    }
+  }, [sortAndMeasureTime, time])
 
   return (
     <SortCard

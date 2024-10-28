@@ -12,6 +12,7 @@ import { NativeSortCard } from '@/components/native-sort'
 import Head from 'next/head'
 import { FlaskConical } from 'lucide-react'
 import { CustomLineChart } from '@/components/custom-line-chart'
+import { ChartDataContextProvider } from '@/contexts/chart-data'
 
 const HomePage: NextPage = () => {
   return (
@@ -31,62 +32,64 @@ const HomePage: NextPage = () => {
             </div>
           </div>
         </div>
-        <div className="flex-1 p-8 pt-6 max-w-[1200px] w-full mx-auto">
-          <div className="flex flex-col gap-4 mt-10">
-            <div className="flex items-center justify-between space-y-2">
-              <h2 className="text-3xl font-bold tracking-tight">
-                JSON Placeholder API (id)
-              </h2>
+        <ChartDataContextProvider>
+          <div className="flex-1 p-8 pt-6 max-w-[1200px] w-full mx-auto">
+            <div className="flex flex-col gap-4 mt-10">
+              <div className="flex items-center justify-between space-y-2">
+                <h2 className="text-3xl font-bold tracking-tight">
+                  JSON Placeholder API (id)
+                </h2>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <QuickSortCard source="placeholderApi" sortBy="id" />
+                <BubbleSortCard source="placeholderApi" sortBy="id" />
+                <CocktailSortCard source="placeholderApi" sortBy="id" />
+                <InsertionSortCard source="placeholderApi" sortBy="id" />
+                <MergeSortCard source="placeholderApi" sortBy="id" />
+                <SelectionSortCard source="placeholderApi" sortBy="id" />
+                <HeapSortCard source="placeholderApi" sortBy="id" />
+                <NativeSortCard source="placeholderApi" sortBy="id" />
+              </div>
+              <CustomLineChart source="placeholderApi" />
             </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <QuickSortCard source="placeholderApi" sortBy="id" />
-              <BubbleSortCard source="placeholderApi" sortBy="id" />
-              <CocktailSortCard source="placeholderApi" sortBy="id" />
-              <InsertionSortCard source="placeholderApi" sortBy="id" />
-              <MergeSortCard source="placeholderApi" sortBy="id" />
-              <SelectionSortCard source="placeholderApi" sortBy="id" />
-              <HeapSortCard source="placeholderApi" sortBy="id" />
-              <NativeSortCard source="placeholderApi" sortBy="id" />
+            <div className="flex flex-col gap-4 mt-10">
+              <div className="flex items-center justify-between space-y-2">
+                <h2 className="text-3xl font-bold tracking-tight">
+                  Sample JSON data (name)
+                </h2>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <QuickSortCard source="sample" sortBy="name" />
+                <BubbleSortCard source="sample" sortBy="name" />
+                <CocktailSortCard source="sample" sortBy="name" />
+                <InsertionSortCard source="sample" sortBy="name" />
+                <MergeSortCard source="sample" sortBy="name" />
+                <SelectionSortCard source="sample" sortBy="name" />
+                <HeapSortCard source="sample" sortBy="name" />
+                <NativeSortCard source="sample" sortBy="name" />
+              </div>
+              <CustomLineChart source="sample" />
             </div>
-            <CustomLineChart />
+            <div className="flex flex-col gap-4 mt-10">
+              <div className="flex items-center justify-between space-y-2">
+                <h2 className="text-3xl font-bold tracking-tight">
+                  Numeric array
+                </h2>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <QuickSortCard source="numbers" sortBy="number" />
+                <BubbleSortCard source="numbers" sortBy="number" />
+                <CocktailSortCard source="numbers" sortBy="number" />
+                <InsertionSortCard source="numbers" sortBy="number" />
+                <MergeSortCard source="numbers" sortBy="number" />
+                <SelectionSortCard source="numbers" sortBy="number" />
+                <HeapSortCard source="numbers" sortBy="number" />
+                <NativeSortCard source="numbers" sortBy="number" />
+              </div>
+              <CustomLineChart source="numbers" />
+            </div>
           </div>
-          <div className="flex flex-col gap-4 mt-10">
-            <div className="flex items-center justify-between space-y-2">
-              <h2 className="text-3xl font-bold tracking-tight">
-                Sample JSON data (name)
-              </h2>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <QuickSortCard source="sample" sortBy="name" />
-              <BubbleSortCard source="sample" sortBy="name" />
-              <CocktailSortCard source="sample" sortBy="name" />
-              <InsertionSortCard source="sample" sortBy="name" />
-              <MergeSortCard source="sample" sortBy="name" />
-              <SelectionSortCard source="sample" sortBy="name" />
-              <HeapSortCard source="sample" sortBy="name" />
-              <NativeSortCard source="sample" sortBy="name" />
-            </div>
-            <CustomLineChart />
-          </div>
-          <div className="flex flex-col gap-4 mt-10">
-            <div className="flex items-center justify-between space-y-2">
-              <h2 className="text-3xl font-bold tracking-tight">
-                Numeric array
-              </h2>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <QuickSortCard source="numbers" sortBy="number" />
-              <BubbleSortCard source="numbers" sortBy="number" />
-              <CocktailSortCard source="numbers" sortBy="number" />
-              <InsertionSortCard source="numbers" sortBy="number" />
-              <MergeSortCard source="numbers" sortBy="number" />
-              <SelectionSortCard source="numbers" sortBy="number" />
-              <HeapSortCard source="numbers" sortBy="number" />
-              <NativeSortCard source="numbers" sortBy="number" />
-            </div>
-            <CustomLineChart />
-          </div>
-        </div>
+        </ChartDataContextProvider>
       </div>
     </>
   )

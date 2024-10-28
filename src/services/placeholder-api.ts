@@ -9,7 +9,9 @@ type GetPhotosFn = (params: GetPhotosFnParams) => Promise<GetPhotosFnResponse>
 
 export const getPhotos: GetPhotosFn = async () => {
   try {
-    const response = await placeholderApi.get<GetPhotosFnResponse>('/photos')
+    const response = await placeholderApi.get<GetPhotosFnResponse>('/photos', {
+      timeout: 10000,
+    })
 
     return shuffle(response?.data ?? [])
   } catch (error) {

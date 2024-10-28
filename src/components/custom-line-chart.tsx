@@ -1,4 +1,4 @@
-import { CartesianGrid, LabelList, Line, LineChart } from 'recharts'
+import { CartesianGrid, LabelList, Line, LineChart, YAxis } from 'recharts'
 
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -7,23 +7,19 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
+import { useCallback, useEffect, useState } from 'react'
+import { useChartData } from '@/contexts/chart-data'
 
 export const description = 'A line chart with a custom label'
 
-const chartData = [
-  { algorithm: 'quick', time: 275 },
-  { algorithm: 'bubble', time: 200 },
-  { algorithm: 'cocktail', time: 187 },
-  { algorithm: 'insertion', time: 173 },
-  { algorithm: 'merge', time: 90 },
-  { algorithm: 'selection', time: 90 },
-  { algorithm: 'heap', time: 90 },
-  { algorithm: 'js-native', time: 90 },
-]
+type ChartDataItem = {
+  algorithm: string
+  time: string
+}
 
 const chartConfig = {
   time: {
-    label: 'Time',
+    label: 'Time (ms)',
     color: 'hsl(var(--chart-2))',
   },
   quick: {
@@ -54,13 +50,134 @@ const chartConfig = {
     label: 'Heap',
     color: 'hsl(var(--chart-3))',
   },
-  'js-native': {
+  native: {
     label: 'JS Native',
     color: 'hsl(var(--chart-4))',
   },
 } satisfies ChartConfig
 
-export const CustomLineChart: React.FC = () => {
+interface CustomLineChartProps {
+  source: Source
+}
+
+export const CustomLineChart: React.FC<CustomLineChartProps> = ({ source }) => {
+  const {
+    placeholderApiQuickTime,
+    placeholderApiBubbleTime,
+    placeholderApiCocktailTime,
+    placeholderApiInsertionTime,
+    placeholderApiMergeTime,
+    placeholderApiSelectionTime,
+    placeholderApiHeapTime,
+    placeholderApiNativeTime,
+    sampleQuickTime,
+    sampleBubbleTime,
+    sampleCocktailTime,
+    sampleInsertionTime,
+    sampleMergeTime,
+    sampleSelectionTime,
+    sampleHeapTime,
+    sampleNativeTime,
+    numbersQuickTime,
+    numbersBubbleTime,
+    numbersCocktailTime,
+    numbersInsertionTime,
+    numbersMergeTime,
+    numbersSelectionTime,
+    numbersHeapTime,
+    numbersNativeTime,
+  } = useChartData()
+
+  const [chartData, setChartData] = useState<ChartDataItem[]>([])
+
+  const loadPlaceholderApiData = useCallback(() => {
+    const updatedData = [
+      { algorithm: 'quick', time: placeholderApiQuickTime.toFixed(2) },
+      { algorithm: 'bubble', time: placeholderApiBubbleTime.toFixed(2) },
+      { algorithm: 'cocktail', time: placeholderApiCocktailTime.toFixed(2) },
+      { algorithm: 'insertion', time: placeholderApiInsertionTime.toFixed(2) },
+      { algorithm: 'merge', time: placeholderApiMergeTime.toFixed(2) },
+      { algorithm: 'selection', time: placeholderApiSelectionTime.toFixed(2) },
+      { algorithm: 'heap', time: placeholderApiHeapTime.toFixed(2) },
+      { algorithm: 'native', time: placeholderApiNativeTime.toFixed(2) },
+    ]
+
+    setChartData(updatedData)
+  }, [
+    placeholderApiQuickTime,
+    placeholderApiBubbleTime,
+    placeholderApiCocktailTime,
+    placeholderApiInsertionTime,
+    placeholderApiMergeTime,
+    placeholderApiSelectionTime,
+    placeholderApiHeapTime,
+    placeholderApiNativeTime,
+  ])
+
+  const loadSampleData = useCallback(() => {
+    const updatedData = [
+      { algorithm: 'quick', time: sampleQuickTime.toFixed(2) },
+      { algorithm: 'bubble', time: sampleBubbleTime.toFixed(2) },
+      { algorithm: 'cocktail', time: sampleCocktailTime.toFixed(2) },
+      { algorithm: 'insertion', time: sampleInsertionTime.toFixed(2) },
+      { algorithm: 'merge', time: sampleMergeTime.toFixed(2) },
+      { algorithm: 'selection', time: sampleSelectionTime.toFixed(2) },
+      { algorithm: 'heap', time: sampleHeapTime.toFixed(2) },
+      { algorithm: 'native', time: sampleNativeTime.toFixed(2) },
+    ]
+
+    setChartData(updatedData)
+  }, [
+    sampleQuickTime,
+    sampleBubbleTime,
+    sampleCocktailTime,
+    sampleInsertionTime,
+    sampleMergeTime,
+    sampleSelectionTime,
+    sampleHeapTime,
+    sampleNativeTime,
+  ])
+
+  const loadNumbersData = useCallback(() => {
+    const updatedData: ChartDataItem[] = [
+      { algorithm: 'quick', time: numbersQuickTime.toFixed(2) },
+      { algorithm: 'bubble', time: numbersBubbleTime.toFixed(2) },
+      { algorithm: 'cocktail', time: numbersCocktailTime.toFixed(2) },
+      { algorithm: 'insertion', time: numbersInsertionTime.toFixed(2) },
+      { algorithm: 'merge', time: numbersMergeTime.toFixed(2) },
+      { algorithm: 'selection', time: numbersSelectionTime.toFixed(2) },
+      { algorithm: 'heap', time: numbersHeapTime.toFixed(2) },
+      { algorithm: 'native', time: numbersNativeTime.toFixed(2) },
+    ]
+
+    setChartData(updatedData)
+  }, [
+    numbersQuickTime,
+    numbersBubbleTime,
+    numbersCocktailTime,
+    numbersInsertionTime,
+    numbersMergeTime,
+    numbersSelectionTime,
+    numbersHeapTime,
+    numbersNativeTime,
+  ])
+
+  useEffect(() => {
+    if (source === 'placeholderApi') loadPlaceholderApiData()
+  }, [loadPlaceholderApiData, source])
+
+  useEffect(() => {
+    if (source === 'sample') loadSampleData()
+  }, [loadSampleData, source])
+
+  useEffect(() => {
+    if (source === 'numbers') loadNumbersData()
+  }, [loadNumbersData, source])
+
+  if (!chartData.length) return <></>
+
+  if (chartData.find((d) => d.time === '0.00')) return <></>
+
   return (
     <Card>
       <CardContent>
@@ -84,6 +201,13 @@ export const CustomLineChart: React.FC = () => {
                   hideLabel
                 />
               }
+            />
+            <YAxis
+              tickCount={10}
+              tickFormatter={(value) => value.toFixed(1)}
+              type="number"
+              unit="ms"
+              domain={[-1000, 6000]}
             />
             <Line
               dataKey="time"
