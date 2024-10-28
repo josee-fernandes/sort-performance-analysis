@@ -11,6 +11,7 @@ import { HeapSortCard } from '@/components/heap-sort'
 import { NativeSortCard } from '@/components/native-sort'
 import Head from 'next/head'
 import { FlaskConical } from 'lucide-react'
+import { CustomLineChart } from '@/components/custom-line-chart'
 
 const HomePage: NextPage = () => {
   return (
@@ -18,7 +19,7 @@ const HomePage: NextPage = () => {
       <Head>
         <title>Sorting Performance Analysis</title>
       </Head>
-      <div className="bg-background min-h-screen">
+      <div className="bg-background min-h-screen pb-10">
         <div className="border-b ">
           <div className="flex h-16 items-center px-8 justify-between space-y-2">
             <div className="flex items-center gap-1">
@@ -30,7 +31,7 @@ const HomePage: NextPage = () => {
             </div>
           </div>
         </div>
-        <div className="flex-1 p-8 pt-6">
+        <div className="flex-1 p-8 pt-6 max-w-[1200px] w-full mx-auto">
           <div className="flex flex-col gap-4 mt-10">
             <div className="flex items-center justify-between space-y-2">
               <h2 className="text-3xl font-bold tracking-tight">
@@ -47,6 +48,7 @@ const HomePage: NextPage = () => {
               <HeapSortCard source="placeholderApi" sortBy="id" />
               <NativeSortCard source="placeholderApi" sortBy="id" />
             </div>
+            <CustomLineChart />
           </div>
           <div className="flex flex-col gap-4 mt-10">
             <div className="flex items-center justify-between space-y-2">
@@ -64,6 +66,7 @@ const HomePage: NextPage = () => {
               <HeapSortCard source="sample" sortBy="name" />
               <NativeSortCard source="sample" sortBy="name" />
             </div>
+            <CustomLineChart />
           </div>
           <div className="flex flex-col gap-4 mt-10">
             <div className="flex items-center justify-between space-y-2">
@@ -81,6 +84,7 @@ const HomePage: NextPage = () => {
               <HeapSortCard source="numbers" sortBy="number" />
               <NativeSortCard source="numbers" sortBy="number" />
             </div>
+            <CustomLineChart />
           </div>
         </div>
       </div>
