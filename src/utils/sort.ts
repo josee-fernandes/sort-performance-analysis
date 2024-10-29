@@ -43,6 +43,21 @@ export const quickSort = (
   return arr
 }
 
+export const iterativeQuickSort = (arr: any[], sortBy: SortBy) => {
+  const stack = [{ low: 0, high: arr.length - 1 }]
+
+  while (stack.length > 0) {
+    const { low, high } = stack.pop()!
+    if (low < high) {
+      const pi = partition(arr, low, high, sortBy)
+
+      stack.push({ low, high: pi - 1 })
+      stack.push({ low: pi + 1, high })
+    }
+  }
+  return arr
+}
+
 export const bubbleSort = (array: any[], sortBy: SortBy) => {
   const arr = Array.from(array) // avoid side effects
   for (let i = 1; i < arr.length; i++) {

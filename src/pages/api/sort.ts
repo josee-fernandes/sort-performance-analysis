@@ -5,9 +5,9 @@ import {
   cocktailSort,
   heapSort,
   insertionSort,
+  iterativeQuickSort,
   mergeSort,
   nativeSort,
-  quickSort,
   selectionSort,
 } from '@/utils/sort'
 import { shuffle } from '@/utils/array'
@@ -36,6 +36,16 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
       let result = 0
 
       switch (algorithm) {
+        case 'quick':
+          {
+            const start = performance.now()
+            await new Promise((resolve) =>
+              resolve(iterativeQuickSort(data, sortBy)),
+            )
+            const end = performance.now()
+            result = end - start
+          }
+          break
         case 'bubble':
           {
             const start = performance.now()
@@ -48,14 +58,6 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
           {
             const start = performance.now()
             await new Promise((resolve) => resolve(cocktailSort(data, sortBy)))
-            const end = performance.now()
-            result = end - start
-          }
-          break
-        case 'heap':
-          {
-            const start = performance.now()
-            await new Promise((resolve) => resolve(heapSort(data, sortBy)))
             const end = performance.now()
             result = end - start
           }
@@ -76,24 +78,6 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
             result = end - start
           }
           break
-        case 'native':
-          {
-            const start = performance.now()
-            await new Promise((resolve) => resolve(nativeSort(data, sortBy)))
-            const end = performance.now()
-            result = end - start
-          }
-          break
-        case 'quick':
-          {
-            const start = performance.now()
-            await new Promise((resolve) =>
-              resolve(quickSort(data, 0, data.length - 1, sortBy)),
-            )
-            const end = performance.now()
-            result = end - start
-          }
-          break
         case 'selection':
           {
             const start = performance.now()
@@ -102,6 +86,23 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
             result = end - start
           }
           break
+        case 'heap':
+          {
+            const start = performance.now()
+            await new Promise((resolve) => resolve(heapSort(data, sortBy)))
+            const end = performance.now()
+            result = end - start
+          }
+          break
+        case 'native':
+          {
+            const start = performance.now()
+            await new Promise((resolve) => resolve(nativeSort(data, sortBy)))
+            const end = performance.now()
+            result = end - start
+          }
+          break
+
         default:
           result = 0
       }
