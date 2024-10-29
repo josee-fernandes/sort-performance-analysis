@@ -5,14 +5,20 @@ const partition = (arr: any[], low: number, high: number, sortBy: SortBy) => {
       ? arr[high]?.id
       : sortBy === 'name'
         ? arr[high]?.name
-        : arr[high]
+        : arr[high]?.number // Ensure correct attribute for 'number'
+
   let i = low - 1
 
   for (let j = low; j <= high - 1; j++) {
     const current =
-      sortBy === 'id' ? arr[j]?.id : sortBy === 'name' ? arr[j]?.name : arr[j]
+      sortBy === 'id'
+        ? arr[j]?.id
+        : sortBy === 'name'
+          ? arr[j]?.name
+          : arr[j]?.number
 
-    if (current < pivot) {
+    // Use `<=` to ensure comparison and handle all attributes safely
+    if (current !== undefined && current < pivot) {
       i++
       ;[arr[i], arr[j]] = [arr[j], arr[i]]
     }
@@ -27,11 +33,12 @@ export const quickSort = (
   high: number,
   sortBy: SortBy,
 ) => {
-  if (low >= high) return arr
-  const pi = partition(arr, low, high, sortBy)
+  if (low < high) {
+    const pi = partition(arr, low, high, sortBy)
 
-  quickSort(arr, low, pi - 1, sortBy)
-  quickSort(arr, pi + 1, high, sortBy)
+    quickSort(arr, low, pi - 1, sortBy)
+    quickSort(arr, pi + 1, high, sortBy)
+  }
 
   return arr
 }

@@ -13,7 +13,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useChartData } from '@/contexts/chart-data'
 
 export const description = 'A line chart with a custom label'
@@ -66,6 +66,8 @@ interface CustomLineChartProps {
   source: Source
 }
 
+const min = 0
+
 export const CustomLineChart: React.FC<CustomLineChartProps> = ({ source }) => {
   const {
     placeholderApiQuickTime,
@@ -95,6 +97,11 @@ export const CustomLineChart: React.FC<CustomLineChartProps> = ({ source }) => {
   } = useChartData()
 
   const [chartData, setChartData] = useState<ChartDataItem[]>([])
+
+  const max = useMemo(
+    () => Math.ceil(Math.max(...chartData.map((d) => Number(d.time)))) + 10,
+    [chartData],
+  )
 
   const loadPlaceholderApiData = useCallback(() => {
     const updatedData = [
@@ -214,7 +221,7 @@ export const CustomLineChart: React.FC<CustomLineChartProps> = ({ source }) => {
               axisLine={false}
               tickMargin={8}
             />
-            <YAxis tickCount={10} type="number" unit="ms" />
+            <YAxis tickCount={10} type="number" unit="ms" domain={[min, max]} />
             <Line
               dataKey="time"
               type="linear"
