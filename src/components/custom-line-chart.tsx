@@ -224,7 +224,7 @@ export const CustomLineChart: React.FC<CustomLineChartProps> = ({ source }) => {
             <YAxis tickCount={10} type="number" unit="ms" domain={[min, max]} />
             <Line
               dataKey="time"
-              type="linear"
+              type="monotone"
               stroke="hsl(var(--foreground))"
               strokeWidth={2}
               dot={{
